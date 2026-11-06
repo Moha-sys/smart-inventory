@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-nodeport-service
+  labels:
+    app: smart-inventory
+    component: client
+spec:
+  type: NodePort
+  selector:
+    component: client
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      nodePort: 30080
+      protocol: TCP
