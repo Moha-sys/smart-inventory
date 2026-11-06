@@ -1,0 +1,20 @@
+# syntax=docker/dockerfile:1
+# ============================================================
+# alert-service — DEVELOPMENT image (auto-restarts on file changes)
+# Source is bind-mounted by docker-compose.dev.yml.
+# Production uses Dockerfile.
+# ============================================================
+FROM node:20-alpine
+ENV NODE_ENV=development
+WORKDIR /app
+RUN chown node:node /app
+USER node
+
+COPY --chown=node:node package.json package-lock.json ./
+RUN npm ci
+
+COPY --chown=node:node . .
+
+EXPOSE 3001
+# "npm run dev" = node --watch src/index.js
+CMD ["npm", "run", "dev"]

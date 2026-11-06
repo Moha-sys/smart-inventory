@@ -1,0 +1,79 @@
+# ============================================================
+# PRODUCTION / deployment stack
+#   docker compose up -d --build
+# For local development with hot reload, use:
+#   docker compose -f docker-compose.dev.yml up --build
+# Override defaults by copying .env.example to .env
+# ============================================================
+name: smart-inventory
+
+x-db-env: &db-env
+  DB_HOST: postgres
+  DB_PORT: "5432"
+  DB_USER: ${POSTGRES_USER:-inventory}
+  DB_PASSWORD: ${POSTGRES_PASSWORD:-inventory}
+  DB_NAME: ${POSTGRES_DB:-inventory}
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-inventory}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-inventory}
+      POSTGRES_DB: ${POSTGRES_DB:-inventory}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  inventory-service:
+    image: mohadevv/smart-inventory-server:latest
+    build:
+      context: ./inventory-service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      <<: *db-env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+
+  alert-service:
+    image: mohadevv/smart-inventory-worker:latest
+    build:
+      context: ./alert-service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      <<: *db-env
+      INVENTORY_URL: http://inventory-service:3000
+      POLL_INTERVAL_MS: ${POLL_INTERVAL_MS:-15000}
+      WEBHOOK_URL: ${WEBHOOK_URL:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      inventory-service:
+        condition: service_started
+    ports:
+      - "3001:3001"
+
+  frontend:
+    image: mohadevv/smart-inventory-client:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - inventory-service
+      - alert-service
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+
+volumes:
+  pgdata:

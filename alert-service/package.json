@@ -1,0 +1,17 @@
+{
+  "name": "alert-service",
+  "version": "1.0.0",
+  "description": "Low-stock alert service",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "pg": "^8.12.0",
+    "prom-client": "^15.1.3"
+  }
+}

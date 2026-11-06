@@ -1,0 +1,86 @@
+# ============================================================
+# DEVELOPMENT stack — hot reload, source mounted from your machine
+#   docker compose -f docker-compose.dev.yml up --build
+# Dashboard (Vite): http://localhost:5173
+# For deployment, use docker-compose.yml instead.
+# ============================================================
+name: smart-inventory-dev
+
+x-db-env: &db-env
+  DB_HOST: postgres
+  DB_PORT: "5432"
+  DB_USER: inventory
+  DB_PASSWORD: inventory
+  DB_NAME: inventory
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: inventory
+      POSTGRES_PASSWORD: inventory
+      POSTGRES_DB: inventory
+    volumes:
+      - pgdata-dev:/var/lib/postgresql/data
+    ports:
+      - "5432:5432" # handy for psql / DB GUIs
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U inventory -d inventory"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  inventory-service:
+    build:
+      context: ./inventory-service
+      dockerfile: Dockerfile.dev
+    environment:
+      <<: *db-env
+    volumes:
+      - ./inventory-service:/app
+      - /app/node_modules # keep the image's node_modules, not the host's
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+
+  alert-service:
+    build:
+      context: ./alert-service
+      dockerfile: Dockerfile.dev
+    environment:
+      <<: *db-env
+      INVENTORY_URL: http://inventory-service:3000
+      POLL_INTERVAL_MS: "5000"
+      # WEBHOOK_URL: https://hooks.slack.com/services/XXX   # optional
+    volumes:
+      - ./alert-service:/app
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+      inventory-service:
+        condition: service_started
+    ports:
+      - "3001:3001"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    environment:
+      INVENTORY_URL: http://inventory-service:3000
+      ALERTS_URL: http://alert-service:3001
+      CHOKIDAR_USEPOLLING: "true" # reliable hot reload on Windows/macOS
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - inventory-service
+      - alert-service
+    ports:
+      - "5173:5173"
+
+volumes:
+  pgdata-dev:

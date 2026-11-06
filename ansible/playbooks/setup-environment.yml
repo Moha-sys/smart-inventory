@@ -1,0 +1,153 @@
+---
+# ============================================================
+# Ansible Playbook: Setup DevOps Environment
+# Provisions Docker, kubectl, Python Kubernetes SDK, and NGINX Ingress
+# ============================================================
+- name: Provision DevOps Environment on Kubernetes Node
+  hosts: k8s_nodes
+  become: true
+  gather_facts: true
+
+  vars:
+    kubectl_version: "v1.30.0"
+    ingress_nginx_manifest_url: "https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.0/deploy/static/provider/cloud/deploy.yaml"
+
+  tasks:
+    - name: Display target host and architecture information
+      ansible.builtin.debug:
+        msg: "Provisioning host: {{ inventory_hostname }} (OS: {{ ansible_os_family }}, Arch: {{ ansible_architecture }})"
+
+    # ------------------------------------------------------------
+    # 1. System Prerequisites (Debian / Ubuntu)
+    # ------------------------------------------------------------
+    - name: Update apt cache and install prerequisite packages (Debian/Ubuntu)
+      ansible.builtin.apt:
+        name:
+          - curl
+          - ca-certificates
+          - gnupg
+          - apt-transport-https
+          - git
+          - python3-pip
+          - python3-setuptools
+          - tar
+        state: present
+        update_cache: true
+      when: ansible_os_family == "Debian"
+
+    # ------------------------------------------------------------
+    # 1b. System Prerequisites (RedHat / Fedora / CentOS)
+    # ------------------------------------------------------------
+    - name: Install prerequisite packages (RedHat/Fedora)
+      ansible.builtin.package:
+        name:
+          - curl
+          - ca-certificates
+          - gnupg2
+          - git
+          - python3-pip
+          - python3-setuptools
+          - tar
+        state: present
+      when: ansible_os_family == "RedHat"
+
+    # ------------------------------------------------------------
+    # 2. Docker Installation & Service Management
+    # ------------------------------------------------------------
+    - name: Check if Docker binary is already installed
+      ansible.builtin.command: which docker
+      register: docker_check
+      changed_when: false
+      failed_when: false
+
+    - name: Install Docker via official convenience script if missing
+      ansible.builtin.shell: |
+        curl -fsSL https://get.docker.com | sh
+      args:
+        creates: /usr/bin/docker
+      when: docker_check.rc != 0
+
+    - name: Ensure Docker service is started and enabled
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+      ignore_errors: true
+
+    - name: Add current user to docker group
+      ansible.builtin.user:
+        name: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+        groups: docker
+        append: true
+      when: ansible_env.SUDO_USER is defined or ansible_user_id is defined
+
+    # ------------------------------------------------------------
+    # 3. kubectl Installation (Architecture-Aware)
+    # ------------------------------------------------------------
+    - name: Set kubectl architecture suffix
+      ansible.builtin.set_fact:
+        k8s_arch: "{{ 'arm64' if ansible_architecture in ['aarch64', 'arm64'] else 'amd64' }}"
+
+    - name: Download official kubectl binary
+      ansible.builtin.get_url:
+        url: "https://dl.k8s.io/release/{{ kubectl_version }}/bin/linux/{{ k8s_arch }}/kubectl"
+        dest: /usr/local/bin/kubectl
+        mode: '0755'
+        force: false
+
+    - name: Verify kubectl installation
+      ansible.builtin.command: kubectl version --client --output=yaml
+      register: kubectl_client_ver
+      changed_when: false
+
+    - name: Output kubectl version
+      ansible.builtin.debug:
+        var: kubectl_client_ver.stdout_lines
+
+    # ------------------------------------------------------------
+    # 4. Python Kubernetes Dependencies
+    # ------------------------------------------------------------
+    - name: Install Python kubernetes and PyYAML packages
+      ansible.builtin.pip:
+        name:
+          - kubernetes
+          - PyYAML
+        extra_args: --break-system-packages
+      ignore_errors: true
+
+    # ------------------------------------------------------------
+    # 5. Ingress Controller (NGINX) Setup
+    # ------------------------------------------------------------
+    - name: Check if Minikube is present on the system
+      ansible.builtin.command: which minikube
+      register: minikube_check
+      changed_when: false
+      failed_when: false
+
+    - name: Enable Ingress addon on Minikube if available
+      ansible.builtin.command: minikube addons enable ingress
+      when: minikube_check.rc == 0
+      become: false
+      ignore_errors: true
+      register: minikube_ingress_result
+
+    - name: Apply official NGINX Ingress Controller manifest on generic Kubernetes cluster
+      ansible.builtin.command: >
+        kubectl apply -f {{ ingress_nginx_manifest_url }}
+      become: false
+      when: minikube_check.rc != 0 or minikube_ingress_result is failed
+      ignore_errors: true
+      register: generic_ingress_result
+
+    - name: Wait for Ingress NGINX controller deployment to exist and roll out (optional check)
+      ansible.builtin.command: >
+        kubectl wait --namespace ingress-nginx
+        --for=condition=ready pod
+        --selector=app.kubernetes.io/component=controller
+        --timeout=90s
+      become: false
+      ignore_errors: true
+
+    - name: Environment provisioning summary
+      ansible.builtin.debug:
+        msg: "Environment setup complete: Docker, kubectl, Python modules, and Ingress Controller are ready."

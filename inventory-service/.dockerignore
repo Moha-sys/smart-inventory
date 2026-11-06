@@ -1,0 +1,18 @@
+# dependencies (installed inside the image)
+node_modules
+
+# VCS / editor
+.git
+.gitignore
+.vscode
+.idea
+
+# local config & logs
+.env
+.env.*
+*.log
+npm-debug.log*
+
+# Docker files themselves
+Dockerfile*
+.dockerignore

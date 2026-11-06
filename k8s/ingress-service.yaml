@@ -1,0 +1,42 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-service
+  labels:
+    app: smart-inventory
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /api/inventory/?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: server-cluster-ip-service
+                port:
+                  number: 3000
+          - path: /api/alerts/?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: worker-cluster-ip-service
+                port:
+                  number: 3001
+          - path: /api/?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: server-cluster-ip-service
+                port:
+                  number: 3000
+          - path: /?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: client-cluster-ip-service
+                port:
+                  number: 80

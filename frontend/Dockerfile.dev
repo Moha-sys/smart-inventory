@@ -1,0 +1,22 @@
+# syntax=docker/dockerfile:1
+# ============================================================
+# Frontend — DEVELOPMENT image (Vite dev server, hot reload)
+# Source is bind-mounted by docker-compose.dev.yml, so edits
+# on your machine show up instantly. Production uses Dockerfile.
+# ============================================================
+FROM node:20-alpine
+ENV NODE_ENV=development
+WORKDIR /app
+
+# Own the workdir so Vite can write its cache in node_modules/.vite
+RUN chown node:node /app
+USER node
+
+COPY --chown=node:node package.json package-lock.json ./
+RUN npm ci
+
+COPY --chown=node:node . .
+
+EXPOSE 5173
+# --host 0.0.0.0 so the dev server is reachable from outside the container
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
