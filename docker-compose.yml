@@ -42,7 +42,7 @@ services:
       postgres:
         condition: service_healthy
     ports:
-      - "3000:3000"
+      - "${INVENTORY_PORT:-3000}:3000"
 
   alert-service:
     image: mohadevv/smart-inventory-worker:latest

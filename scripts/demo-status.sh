@@ -51,8 +51,10 @@ echo -e "${BLUE}[4/4] LIVE HTTP ENDPOINT PROBES${NC}"
 echo -n "   - Frontend (Client) Port 8081       : "
 curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8081/healthz || echo "Offline"
 
-echo -n "   - Backend API (Server) Port 3000     : "
-curl -s -o /dev/null -w "%{http_code}\n" http://localhost:3000/health || echo "Offline"
+INV_PORT=3002
+[ "$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/health)" = "200" ] && INV_PORT=3000
+echo -n "   - Backend API (Server) Port ${INV_PORT}     : "
+curl -s -o /dev/null -w "%{http_code}\n" http://localhost:${INV_PORT}/health || echo "Offline"
 
 echo -n "   - Alert Worker Port 3001             : "
 curl -s -o /dev/null -w "%{http_code}\n" http://localhost:3001/health || echo "Offline"
