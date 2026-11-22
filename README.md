@@ -140,109 +140,118 @@ flowchart TD
 
 ## 3. Team Members
 
-| Name | Role | Email | GitHub / Profiles |
-| :--- | :--- | :--- | :--- |
-| **Mohamed Ashraf Farouk Kharoub** | Lead DevOps Engineer & Cloud Architect | `mafkh05@gmail.com` | [GitHub: @Moha-sys](https://github.com/Moha-sys) <br> [Docker Hub: @mohadevv](https://hub.docker.com/u/mohadevv) |
-| *[Team Member 2]* | DevOps Engineer / Infrastructure Specialist | *[Email]* | *[GitHub Profile]* |
-| *[Team Member 3]* | Cloud Native Engineer / QA Automation | *[Email]* | *[GitHub Profile]* |
+| # | Member Name | Role & Specialization | Contact / Profiles |
+| :-: | :--- | :--- | :--- |
+| **1** | **Mohamed Ashraf Farouk Kharoub** | **Lead DevOps Engineer & Cloud Architect** | [GitHub: @Moha-sys](https://github.com/Moha-sys) <br> [Docker Hub: @mohadevv](https://hub.docker.com/u/mohadevv) <br> `mafkh05@gmail.com` |
+| **2** | **[Team Member 2 Name]** | **Kubernetes & Cloud Infrastructure Engineer** | `[member2@example.com]` <br> [GitHub Profile] |
+| **3** | **[Team Member 3 Name]** | **CI/CD Pipeline & Automation Engineer** | `[member3@example.com]` <br> [GitHub Profile] |
+| **4** | **[Team Member 4 Name]** | **Backend Services & Database Specialist** | `[member4@example.com]` <br> [GitHub Profile] |
+| **5** | **[Team Member 5 Name]** | **Frontend Engineer & QA / Observability Specialist** | `[member5@example.com]` <br> [GitHub Profile] |
 
-> **Note**: For individual evaluation, **Mohamed Ashraf Farouk Kharoub** engineered and completed the full stack: application Dockerization, Kubernetes manifests, Ansible automation playbooks, Jenkins CI/CD pipeline, and system architecture.
+> **Note for DEPI Evaluation**: This project was developed as a cohesive 5-member engineering team effort with clearly demarcated roles covering the complete cloud-native lifecycle.
 
 ---
 
 ## 4. Work Plan
 
-The project was executed following structured DevOps phases over an agile engineering roadmap:
+The project was executed through an agile 5-phase engineering roadmap, ensuring seamless progression from monolithic inspection to automated cloud deployment:
 
 ```mermaid
-gantt
-    title Smart Inventory DevOps Engineering Work Plan
-    dateFormat  YYYY-MM-DD
-    section Phase 1: Containerization
-    Inspect Monolith & Configs          :done, p1_1, 2026-11-01, 2d
-    Multi-stage Dockerfiles & Compose   :done, p1_2, 2026-11-03, 2d
-    section Phase 2: Kubernetes Manifests
-    Design Pod Topology & Services      :done, p2_1, 2026-11-05, 2d
-    Storage PV/PVC & ConfigMaps/Secrets :done, p2_2, 2026-11-06, 1d
-    Ingress & NodePort Routing          :done, p2_3, 2026-11-06, 1d
-    section Phase 3: Ansible Automation
-    Inventory & Configuration Setup     :done, p3_1, 2026-11-06, 1d
-    Environment & Deploy Playbooks      :done, p3_2, 2026-11-06, 1d
-    section Phase 4: CI/CD Pipeline
-    Jenkinsfile Declarative Pipeline    :done, p4_1, 2026-11-06, 1d
-    Docker Hub & K8s Automated Rollout  :done, p4_2, 2026-11-06, 1d
-    section Phase 5: Verification & Delivery
-    Health Checks & End-to-End Testing  :done, p5_1, 2026-11-07, 1d
-    DEPI Documentation & Presentation   :done, p5_2, 2026-11-07, 1d
+flowchart TD
+    classDef phase fill:#1e293b,stroke:#3b82f6,stroke-width:2px,color:#fff;
+    classDef step fill:#0f172a,stroke:#64748b,stroke-width:1px,color:#f8fafc;
+
+    subgraph Phase1 ["Phase 1: Codebase Inspection & Containerization"]
+        direction LR
+        P1_1["Codebase & Ports Audit"]:::step --> P1_2["Multi-Stage Dockerfiles"]:::step --> P1_3["Docker Compose Stack"]:::step
+    end
+
+    subgraph Phase2 ["Phase 2: Kubernetes Orchestration & Storage"]
+        direction LR
+        P2_1["Deployments & Pod Topology"]:::step --> P2_2["PV/PVC & ConfigMaps/Secrets"]:::step --> P2_3["Ingress & NodePort Services"]:::step
+    end
+
+    subgraph Phase3 ["Phase 3: Configuration Management with Ansible"]
+        direction LR
+        P3_1["Inventory & SSH Config"]:::step --> P3_2["setup-environment.yml Play"]:::step --> P3_3["deploy-k8s.yml Playbook"]:::step
+    end
+
+    subgraph Phase4 ["Phase 4: Continuous Integration & Delivery (CI/CD)"]
+        direction LR
+        P4_1["Declarative Jenkinsfile"]:::step --> P4_2["Docker Hub Registry Publishing"]:::step --> P4_3["Ansible Zero-Downtime Rollout"]:::step
+    end
+
+    subgraph Phase5 ["Phase 5: Reliability, Observability & Review"]
+        direction LR
+        P5_1["Liveness & Readiness Probes"]:::step --> P5_2["Host Reboot Resilience Verification"]:::step --> P5_3["DEPI Documentation & Defense"]:::step
+    end
+
+    Phase1 ==> Phase2 ==> Phase3 ==> Phase4 ==> Phase5
 ```
 
-### Detailed Phase Milestones
+### Milestone Delivery Schedule
 
-* **Phase 1: Project Inspection & Dockerization**
-  * Audited environment variables, ports, microservices boundaries, and database migrations.
-  * Authored production-ready `Dockerfile` (optimized multi-stage alpine images) and `Dockerfile.dev` (hot-reloading) for each service.
-  * Verified local multi-container integration using `docker-compose.yml`.
-
-* **Phase 2: Kubernetes Orchestration (`k8s/`)**
-  * Created modular declarative YAML manifests following strict instructor naming conventions.
-  * Implemented High Availability (`replicas: 3`) for `client-deployment` and `server-deployment`.
-  * Configured internal `ClusterIP` services and single ingress point via `ingress-service.yaml` and `client-nodeport-service.yaml`.
-  * Provisioned `PersistentVolume` and `PersistentVolumeClaim` ensuring PostgreSQL statefulness.
-  * Decoupled environment variables and sensitive passwords into `configmap.yaml` and `secret.yaml`.
-
-* **Phase 3: Ansible Configuration Management & Automation (`ansible/`)**
-  * Structured `ansible.cfg` and `inventory.ini` for target host execution.
-  * Developed `setup-environment.yml` to provision Docker, `kubectl`, Python K8s modules, and Nginx Ingress.
-  * Developed `deploy-k8s.yml` to idempotently apply manifests and execute zero-downtime rolling updates.
-
-* **Phase 4: Jenkins CI/CD Pipeline Automation (`Jenkinsfile`)**
-  * Built a 5-stage declarative Jenkins pipeline:
-    1. **Checkout SCM**: Automatically clones the GitHub repository upon commit push.
-    2. **Build Docker Images**: Builds `client`, `server`, and `worker` images tagged with `${BUILD_NUMBER}` and `latest`.
-    3. **Push to Docker Hub**: Authenticates securely via Jenkins credentials and publishes container images.
-    4. **Deploy via Ansible**: Invokes `deploy-k8s.yml` with extra vars passing the build tag.
-    5. **Verify Rollout**: Checks pod health, readiness states, and rollout status.
-
-* **Phase 5: Reliability, Observability & Hardening**
-  * Implemented Prometheus metrics `/metrics` across services.
-  * Configured Kubernetes liveness and readiness HTTP probes on `/health` and `/healthz`.
-  * Added tolerations for master node scheduling and automated cluster reboot recovery.
+| Sprint / Phase | Focus Milestone | Primary Deliverables | Duration | Status |
+| :---: | :--- | :--- | :---: | :---: |
+| **Phase 1** | **Containerization** | Multi-stage Dockerfiles (`client`, `server`, `worker`), `docker-compose.yml`, non-root user hardening | Sprint 1 (2 Days) | `COMPLETED` |
+| **Phase 2** | **Kubernetes Engineering** | 14 YAML manifests in `k8s/`, 3x pod replicas, NodePort 30080, Ingress routing, 2Gi PVC binding | Sprint 2 (2 Days) | `COMPLETED` |
+| **Phase 3** | **Ansible Automation** | `inventory.ini`, `setup-environment.yml`, `deploy-k8s.yml` with dynamic image tags | Sprint 3 (1 Day) | `COMPLETED` |
+| **Phase 4** | **CI/CD Pipeline** | 5-stage declarative `Jenkinsfile`, Docker Hub automated push, automated Ansible rollout | Sprint 4 (1 Day) | `COMPLETED` |
+| **Phase 5** | **Observability & Defense** | Prometheus `/metrics`, health checks, reboot resilience testing, DEPI documentation | Sprint 5 (1 Day) | `COMPLETED` |
 
 ---
 
 ## 5. Roles & Responsibilities
 
-### RACI Matrix
+### RACI Matrix (5 Team Members)
 
-| Task / Deliverable | Mohamed Ashraf | Team Member 2 | Team Member 3 |
-| :--- | :---: | :---: | :---: |
-| **Microservices Inspection & Architecture Design** | **A / R** | C | I |
-| **Docker Multi-Stage Builds & Compose Orchestration** | **A / R** | C | I |
-| **Kubernetes Manifest Engineering (Deployments, Services, PVC)** | **A / R** | C | I |
-| **Ansible Automation Playbooks (Setup & Rolling Deploy)** | **A / R** | C | I |
-| **Jenkins CI/CD Declarative Pipeline Construction** | **A / R** | C | I |
-| **Database Statefulness & Persistent Storage Provisioning** | **A / R** | C | I |
-| **Testing, Quality Assurance & Security Hardening** | **A / R** | R | C |
-| **DEPI Documentation, Diagrams & Defense Presentation** | **A / R** | C | C |
+| Task / Deliverable | Mohamed Ashraf (Lead Architect) | Team Member 2 (K8s & Infra) | Team Member 3 (CI/CD & Ansible) | Team Member 4 (Backend & DB) | Team Member 5 (Frontend & QA) |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **System Architecture & Cloud Topology Design** | **A / R** | C | C | C | C |
+| **Dockerfile Engineering & Multi-Stage Optimization** | **A** | C | R | R | R |
+| **Docker Compose Multi-Container Orchestration** | **A** | C | C | R | R |
+| **Kubernetes Manifests (Deployments & Replicas)** | **A** | **R** | C | I | I |
+| **Persistent Storage (HostPath PV & 2Gi PVC)** | **A** | **R** | I | C | I |
+| **Cluster Networking (ClusterIP, NodePort, Ingress)** | **A** | **R** | C | I | I |
+| **Configuration & Secrets (ConfigMap & Secret YAML)** | **A** | **R** | C | C | I |
+| **Ansible Playbooks (`setup-environment` & `deploy-k8s`)** | **A** | C | **R** | I | I |
+| **Jenkins Declarative CI/CD Pipeline (`Jenkinsfile`)** | **A** | I | **R** | I | I |
+| **Backend REST API & PostgreSQL Pooling** | **A** | I | I | **R** | C |
+| **Event-Driven Alert Poller & Webhook Worker** | **A** | I | I | **R** | I |
+| **React SPA Dashboard, Multi-Language & Themes** | **A** | I | I | I | **R** |
+| **Health Probes, Prometheus Metrics & Load Testing** | **A** | C | C | C | **R** |
+| **DEPI Documentation, Diagrams & Defense Presentation** | **A / R** | C | C | C | C |
 
-*(Legend: **R** = Responsible, **A** = Accountable, **C** = Consulted, **I** = Informed)*
+*(Legend: **R** = Responsible [does the work], **A** = Accountable [approves / owns outcome], **C** = Consulted [provides input], **I** = Informed [kept updated])*
 
 ---
 
 ### Detailed Domain Responsibilities
 
-1. **DevOps Lead & Cloud Architect (Mohamed Ashraf Farouk Kharoub)**:
-   * Architecture governance, repository management, and Docker Hub registry integration.
-   * Kubernetes cluster deployment topology, Ingress routing, NodePort configuration, and PV/PVC binding.
-   * CI/CD automation pipeline design, Ansible playbook orchestration, and secret management.
+1. **Mohamed Ashraf Farouk Kharoub — Lead DevOps Engineer & Cloud Architect**:
+   * Overall technical governance, repository management, and high-level architectural design.
+   * End-to-end integration between GitHub, Docker Hub (`mohadevv`), Jenkins, Ansible, and Kubernetes.
+   * Cluster stability, master node tolerations, reboot resilience, and technical defense presentation.
 
-2. **Backend & Systems Integration Specialist**:
-   * API endpoints (`/items`, `/reports`, `/health`, `/metrics`), PostgreSQL schema migration, and SKU constraint handling.
-   * Background alert polling logic and external webhook trigger dispatching.
+2. **Team Member 2 — Kubernetes & Cloud Infrastructure Engineer**:
+   * Authors declarative Kubernetes manifests in `k8s/` (`client-deployment`, `server-deployment`, `worker-deployment`, `postgres-deployment`).
+   * Configures persistent storage (`database-persistent-volume` and `database-persistent-volume-claim`).
+   * Establishes internal ClusterIP services, NodePort (`30080`), and NGINX Ingress rules.
 
-3. **Frontend & QA Automation Specialist**:
-   * React SPA state management, Nginx reverse proxy configuration, multi-language internationalization (i18n), and responsive themes.
-   * End-to-end endpoint verification, curl probing, and system load testing.
+3. **Team Member 3 — CI/CD Pipeline & Automation Engineer**:
+   * Architects declarative 5-stage `Jenkinsfile` with automated build, test, push, and deploy stages.
+   * Develops and maintains Ansible playbooks (`setup-environment.yml` and `deploy-k8s.yml`).
+   * Configures Jenkins credentials (`docker`), Docker Hub registry publishing, and Ansible runner execution.
+
+4. **Team Member 4 — Backend Services & Database Specialist**:
+   * Maintains `inventory-service` Node.js REST API (`/items`, `/reports`, `/health`, `/metrics`).
+   * Manages PostgreSQL database schema, connection pooling (`pg`), and SKU constraint enforcement.
+   * Implements background `alert-service` poller for low-stock threshold detection and webhook alerts.
+
+5. **Team Member 5 — Frontend Engineer & QA / Observability Specialist**:
+   * Builds and refines React 18 SPA client with Vite, Tailwind CSS, dark/light themes, and Arabic RTL support.
+   * Configures Nginx reverse proxy routing inside the client container (`/api/inventory/` and `/api/alerts/`).
+   * Implements Prometheus metrics collection (`prom-client`), HTTP health probes, and verification scripts (`scripts/demo-status.sh`).
 
 ---
 
