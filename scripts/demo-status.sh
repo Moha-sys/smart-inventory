@@ -12,7 +12,7 @@ YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
-clear
+clear 2>/dev/null || true
 
 echo -e "${CYAN}==============================================================================${NC}"
 echo -e "${CYAN}        SMART INVENTORY MANAGEMENT SYSTEM - LIVE DEMO DASHBOARD        ${NC}"
