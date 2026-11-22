@@ -140,13 +140,13 @@ flowchart TD
 
 ## 3. Team Members
 
-| # | Member Name | Role & Specialization | Contact / Profiles |
+| # | Member Name | Role & Specialization | Profiles / Contact |
 | :-: | :--- | :--- | :--- |
 | **1** | **Mohamed Ashraf Farouk Kharoub** | **Lead DevOps Engineer & Cloud Architect** | [GitHub: @Moha-sys](https://github.com/Moha-sys) <br> [Docker Hub: @mohadevv](https://hub.docker.com/u/mohadevv) <br> `mafkh05@gmail.com` |
-| **2** | **[Team Member 2 Name]** | **Kubernetes & Cloud Infrastructure Engineer** | `[member2@example.com]` <br> [GitHub Profile] |
-| **3** | **[Team Member 3 Name]** | **CI/CD Pipeline & Automation Engineer** | `[member3@example.com]` <br> [GitHub Profile] |
-| **4** | **[Team Member 4 Name]** | **Backend Services & Database Specialist** | `[member4@example.com]` <br> [GitHub Profile] |
-| **5** | **[Team Member 5 Name]** | **Frontend Engineer & QA / Observability Specialist** | `[member5@example.com]` <br> [GitHub Profile] |
+| **2** | **Youssef Amr** | **Kubernetes & Cloud Infrastructure Engineer** | Team Member (DEPI DevOps Track) |
+| **3** | **Hassan Tamer** | **CI/CD Pipeline & Automation Engineer** | Team Member (DEPI DevOps Track) |
+| **4** | **Youssef Islam** | **Backend Services & Database Specialist** | Team Member (DEPI DevOps Track) |
+| **5** | **Kareem Islam** | **Frontend Engineer & QA / Observability Specialist** | Team Member (DEPI DevOps Track) |
 
 > **Note for DEPI Evaluation**: This project was developed as a cohesive 5-member engineering team effort with clearly demarcated roles covering the complete cloud-native lifecycle.
 
@@ -205,7 +205,7 @@ flowchart TD
 
 ### RACI Matrix (5 Team Members)
 
-| Task / Deliverable | Mohamed Ashraf (Lead Architect) | Team Member 2 (K8s & Infra) | Team Member 3 (CI/CD & Ansible) | Team Member 4 (Backend & DB) | Team Member 5 (Frontend & QA) |
+| Task / Deliverable | Mohamed Ashraf (Lead Architect) | Youssef Amr (K8s & Infra) | Hassan Tamer (CI/CD & Ansible) | Youssef Islam (Backend & DB) | Kareem Islam (Frontend & QA) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **System Architecture & Cloud Topology Design** | **A / R** | C | C | C | C |
 | **Dockerfile Engineering & Multi-Stage Optimization** | **A** | C | R | R | R |
@@ -233,22 +233,22 @@ flowchart TD
    * End-to-end integration between GitHub, Docker Hub (`mohadevv`), Jenkins, Ansible, and Kubernetes.
    * Cluster stability, master node tolerations, reboot resilience, and technical defense presentation.
 
-2. **Team Member 2 — Kubernetes & Cloud Infrastructure Engineer**:
+2. **Youssef Amr — Kubernetes & Cloud Infrastructure Engineer**:
    * Authors declarative Kubernetes manifests in `k8s/` (`client-deployment`, `server-deployment`, `worker-deployment`, `postgres-deployment`).
    * Configures persistent storage (`database-persistent-volume` and `database-persistent-volume-claim`).
    * Establishes internal ClusterIP services, NodePort (`30080`), and NGINX Ingress rules.
 
-3. **Team Member 3 — CI/CD Pipeline & Automation Engineer**:
+3. **Hassan Tamer — CI/CD Pipeline & Automation Engineer**:
    * Architects declarative 5-stage `Jenkinsfile` with automated build, test, push, and deploy stages.
    * Develops and maintains Ansible playbooks (`setup-environment.yml` and `deploy-k8s.yml`).
    * Configures Jenkins credentials (`docker`), Docker Hub registry publishing, and Ansible runner execution.
 
-4. **Team Member 4 — Backend Services & Database Specialist**:
+4. **Youssef Islam — Backend Services & Database Specialist**:
    * Maintains `inventory-service` Node.js REST API (`/items`, `/reports`, `/health`, `/metrics`).
    * Manages PostgreSQL database schema, connection pooling (`pg`), and SKU constraint enforcement.
    * Implements background `alert-service` poller for low-stock threshold detection and webhook alerts.
 
-5. **Team Member 5 — Frontend Engineer & QA / Observability Specialist**:
+5. **Kareem Islam — Frontend Engineer & QA / Observability Specialist**:
    * Builds and refines React 18 SPA client with Vite, Tailwind CSS, dark/light themes, and Arabic RTL support.
    * Configures Nginx reverse proxy routing inside the client container (`/api/inventory/` and `/api/alerts/`).
    * Implements Prometheus metrics collection (`prom-client`), HTTP health probes, and verification scripts (`scripts/demo-status.sh`).
